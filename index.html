@@ -2,272 +2,102 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>うわぁ~ My Anime Movie List! ✨</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Falling Petals</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
-      background: #000000; /* AMOLED Black */
-      font-family: 'Arial', sans-serif;
-      color: #ffffff;
-      overflow-x: hidden;
-      position: relative;
-      min-height: 100vh;
-    }
-
-    header, footer {
-      background: rgba(255, 192, 203, 0.2); /* Light soft pink */
-      border-color: rgba(255, 192, 203, 0.4);
-    }
-
-    .anime-card {
-      transition: all 0.3s ease;
-      position: relative;
       overflow: hidden;
-      background: rgba(255, 255, 255, 0.05); /* Slight transparent white */
-      padding: 1.5rem;
-      border-radius: 1rem;
-      box-shadow: 0 5px 15px rgba(255, 105, 180, 0.1);
+      background: #f0f8ff;
     }
-
-    .anime-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(255, 105, 180, 0.3);
-    }
-
     .petal {
       position: absolute;
-      pointer-events: none;
-      z-index: 1000;
-    }
-
-    .petal img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      filter: drop-shadow(0 0 8px rgba(255, 192, 203, 0.8)); /* Pink glowing petals */
-    }
-
-    @keyframes falling {
-      0% {
-        transform: translateY(-100px) rotate(0deg);
-        opacity: 0;
-      }
-      10% {
-        opacity: 1;
-      }
-      90% {
-        opacity: 1;
-      }
-      100% {
-        transform: translate(calc(var(--sway-amount, 0px)), 110vh) rotate(var(--rotation-amount, 360deg));
-        opacity: 0;
-      }
-    }
-
-    @media (max-width: 640px) {
-      header h1 {
-        font-size: 1.5rem;
-      }
-      .anime-card {
-        padding: 1rem;
-      }
-    }
-
-    .music-control {
-      transition: all 0.3s ease;
-    }
-
-    .music-control:hover {
-      transform: scale(1.1);
+      width: 20px;
+      height: 20px;
+      background-color: pink;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(255, 192, 203, 0.8);
+      opacity: 1;
+      transition: opacity 0.5s ease-in;
     }
   </style>
 </head>
-
 <body>
 
-<header class="text-center py-6 rounded-b-2xl border-b-4">
-  <h1 class="text-4xl md:text-5xl font-bold animate-bounce text-white drop-shadow-lg">
-    マイアニメリスト～✨
-  </h1>
-  <div class="mt-4 max-w-md mx-auto px-4">
-    <input
-      id="search-input"
-      type="text"
-      placeholder="Search anime..."
-      class="w-full p-2 rounded-lg border-2 border-pink-400 focus:outline-none focus:border-pink-600 bg-white bg-opacity-10 text-white"
-      aria-label="Search anime movies"
-    >
-  </div>
-</header>
-
-<main id="anime-list" class="container mx-auto px-4 py-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></main>
-
-<footer class="text-center py-4 rounded-t-2xl mt-8 border-t-4">
-  <p class="text-white">Made with lots of 💖 and sparkles ✨ by Lonely!</p>
-  <div class="mt-2 flex justify-center gap-4">
-    <button id="music-toggle" class="music-control bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600" aria-label="Toggle background music" aria-pressed="false">
-      Play Music
-    </button>
-    <button id="volume-control" class="music-control bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600" aria-label="Toggle mute" aria-pressed="false">
-      Mute
-    </button>
-  </div>
-</footer>
-
-<audio id="bg-music" preload="auto" loop>
-  <source src="https://cdn.discordapp.com/attachments/1320044979267047447/1365731184851681341/output_audio.mp3?ex=680e5fc8&is=680d0e48&hm=c51b6d6e2e2b482d7c7580a18048b24328b9bd8e0017be2a75c27afd92cfc0d8&" type="audio/mpeg">
-</audio>
-
-<!-- Hidden pearl image -->
-<div style="display: none;">
-  <img id="pearl-image" src="https://media.discordapp.net/attachments/1320044979267047447/1365756715215224893/transparent_image.png?ex=680e778f&is=680d260f&hm=8f30c557e641d2fdc7233e802ac86bc55a11a5baaf7a7db83c3dbae9c911b244&=&format=webp&quality=lossless&width=921&height=676" alt="Pearl">
-</div>
-
 <script>
-  const animes = [
-    { title: "Kimi no Na wa (Your Name)", description: "Two strangers find themselves linked in a bizarre way.", year: 2016 },
-    { title: "Tenki no Ko (Weathering with You)", description: "A boy runs away to Tokyo and meets a girl who can manipulate weather.", year: 2019 },
-    { title: "I Want to Eat Your Pancreas", description: "A bittersweet story about life, death, and love.", year: 2018 },
-    { title: "Josee, the Tiger and the Fish", description: "A story about dreams, love, and overcoming limitations.", year: 2020 },
-    { title: "The Tunnel to Summer, the Exit of Goodbyes", description: "A mystical tunnel that grants wishes at a heavy price.", year: 2022 },
-    { title: "Summer Ghost", description: "Three teenagers meet the spirit of a young woman.", year: 2021 },
-    { title: "Hello World", description: "A sci-fi romance across parallel worlds.", year: 2019 },
-    { title: "Anthem of the Heart", description: "A girl loses her ability to speak due to a traumatic event.", year: 2015 },
-    { title: "A Whisker Away", description: "A girl transforms into a cat to get closer to her crush.", year: 2020 },
-    { title: "To Every You I've Loved Before", description: "Romantic sci-fi story about alternate realities.", year: 2022 },
-    { title: "To Me, The One Who Loved You", description: "Parallel love stories across dimensions.", year: 2022 },
-    { title: "Saekano: The Boring Girlfriend", description: "A story about a high school boy who creates a dating sim with his friends.", year: 2015 },
-    { title: "Rascal Does Not Dream of Bunny Girl Senpai", description: "A mysterious phenomenon causes high school students to experience surreal events.", year: 2018 }
-  ];
+  // Petal collection
+  const petals = [];
 
-  const listContainer = document.getElementById('anime-list');
-  const searchInput = document.getElementById('search-input');
-  const bgMusic = document.getElementById('bg-music');
-  const musicToggle = document.getElementById('music-toggle');
-  const volumeControl = document.getElementById('volume-control');
-  const pearlImage = document.getElementById('pearl-image');
-
-  let favorites = [];
-  try {
-    const storedFavorites = localStorage.getItem('animeFavorites');
-    if (storedFavorites) {
-      favorites = JSON.parse(storedFavorites);
+  // Petal class
+  class Petal {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.vy = Math.random() * 2 + 1; // Random falling speed
+      this.lifetime = Math.random() * 4000 + 3000; // Lifespan in milliseconds
+      this.element = document.createElement('div');
+      this.element.className = 'petal';
+      document.body.appendChild(this.element);
+      this.updatePosition();
+      this.scheduleRemoval(); // Schedule the petal to disappear
     }
-  } catch (error) {
-    console.error("Error loading favorites:", error);
+
+    updatePosition() {
+      this.element.style.left = `${this.x}px`;
+      this.element.style.top = `${this.y}px`;
+    }
+
+    update() {
+      // Move the petal downward
+      this.y += this.vy;
+
+      // Update DOM position
+      this.updatePosition();
+    }
+
+    scheduleRemoval() {
+      // Fade out and remove the petal after its lifetime
+      setTimeout(() => {
+        this.element.style.opacity = '0';
+        setTimeout(() => {
+          this.element.remove();
+        }, 500); // Delay for fade-out transition
+      }, this.lifetime);
+    }
   }
 
-  function renderAnimeList(filteredAnimes) {
-    listContainer.innerHTML = '';
-    filteredAnimes.forEach((anime, index) => {
-      const isFavorite = favorites.includes(anime.title);
-      const card = document.createElement('div');
-      card.className = 'anime-card';
-      card.innerHTML = `
-        <div class="flex justify-between items-start">
-          <h2 class="text-xl font-bold text-pink-400">✨ ${index + 1}. ${anime.title}</h2>
-          <button class="favorite-btn text-2xl ${isFavorite ? 'text-red-500' : 'text-gray-400'}" data-title="${anime.title}">
-            ${isFavorite ? '❤️' : '🤍'}
-          </button>
-        </div>
-        <p class="text-gray-300 mt-2">${anime.description}</p>
-        <p class="text-sm text-gray-500 mt-1">Year: ${anime.year}</p>
-      `;
-      listContainer.appendChild(card);
-    });
+  // Create multiple petals
+  function createPetals(count) {
+    for (let i = 0; i < count; i++) {
+      const x = Math.random() * window.innerWidth;
+      const y = -20; // Start above the viewport
+      petals.push(new Petal(x, y));
+    }
   }
 
-  renderAnimeList(animes);
+  // Animation loop
+  function animate() {
+    petals.forEach((petal, index) => {
+      petal.update();
 
-  function debounce(func, delay) {
-    let timeout;
-    return function(...args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), delay);
-    };
-  }
-
-  function handleSearch(event) {
-    const query = event.target.value.toLowerCase();
-    const filteredAnimes = animes.filter(anime =>
-      anime.title.toLowerCase().includes(query) ||
-      anime.description.toLowerCase().includes(query)
-    );
-    renderAnimeList(filteredAnimes);
-  }
-
-  searchInput.addEventListener('input', debounce(handleSearch, 300));
-
-  listContainer.addEventListener('click', (event) => {
-    if (event.target.classList.contains('favorite-btn')) {
-      const animeTitle = event.target.getAttribute('data-title');
-      const index = favorites.indexOf(animeTitle);
-      if (index !== -1) {
-        favorites.splice(index, 1);
-        event.target.classList.remove('text-red-500');
-        event.target.classList.add('text-gray-400');
-        event.target.textContent = '🤍';
-      } else {
-        favorites.push(animeTitle);
-        event.target.classList.remove('text-gray-400');
-        event.target.classList.add('text-red-500');
-        event.target.textContent = '❤️';
+      // Remove petals that have left the viewport
+      if (petal.y > window.innerHeight) {
+        petals.splice(index, 1); // Remove from array
       }
-      localStorage.setItem('animeFavorites', JSON.stringify(favorites));
-    }
-  });
-
-  musicToggle.addEventListener('click', () => {
-    if (bgMusic.paused) {
-      bgMusic.play();
-      musicToggle.textContent = 'Pause Music';
-    } else {
-      bgMusic.pause();
-      musicToggle.textContent = 'Play Music';
-    }
-  });
-
-  volumeControl.addEventListener('click', () => {
-    bgMusic.muted = !bgMusic.muted;
-    volumeControl.textContent = bgMusic.muted ? 'Unmute' : 'Mute';
-  });
-
-  function createPearl() {
-    const pearl = document.createElement('div');
-    pearl.className = 'petal';
-    const img = document.createElement('img');
-    img.src = pearlImage.src;
-    img.alt = "Pearl";
-    pearl.appendChild(img);
-
-    const startX = Math.random() * window.innerWidth;
-    pearl.style.left = `${startX}px`;
-    pearl.style.top = '-100px';
-
-    const swayAmount = Math.random() * 200 - 100; 
-    const rotateAmount = Math.random() * 720 - 360;
-    const size = Math.random() * 20 + 20; 
-
-    pearl.style.setProperty('--sway-amount', `${swayAmount}px`);
-    pearl.style.setProperty('--rotation-amount', `${rotateAmount}deg`);
-    pearl.style.width = `${size}px`;
-    pearl.style.height = `${size}px`;
-    pearl.style.animation = `falling ${Math.random() * 5 + 5}s ease-in-out forwards`;
-
-    document.body.appendChild(pearl);
-
-    setTimeout(() => {
-      pearl.remove();
-    }, 10000);
+    });
+    requestAnimationFrame(animate);
   }
 
-  setInterval(createPearl, 400);
-  for (let i = 0; i < 30; i++) {
-    setTimeout(createPearl, Math.random() * 3000);
+  // Continuous petal creation
+  function startPetalCreation() {
+    createPetals(5); // Adjust the number of petals per batch
+    setTimeout(startPetalCreation, Math.random() * 1000 + 500);
   }
+
+  // Initialize
+  createPetals(30); // Initial petals
+  animate(); // Start animation
+  startPetalCreation(); // Continuously create petals
 </script>
 
 </body>
